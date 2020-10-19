@@ -6,7 +6,9 @@
 add_library(common
     STATIC include/common/utility.h
            include/common/window.h
-               src/window.cpp)
+           include/common/example.h
+               src/window.cpp
+               src/example.cpp)
 
 target_include_directories(common
     PUBLIC  include
@@ -23,4 +25,4 @@ target_compile_options(common
 target_link_libraries(common
     PUBLIC "-framework AppKit"
            "-framework QuartzCore"
-           "-framework MetalKit")
+           "-framework Metal")

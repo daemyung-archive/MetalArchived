@@ -5,7 +5,7 @@
 
 #include "window.h"
 
-#include <QuartzCore/CAMetalLayer.h>
+#include "example.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -32,10 +32,13 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
                                           CVOptionFlags *flagsOut,
                                           void *displayLinkContext) {
     @autoreleasepool {
-        auto example = static_cast<Example *>(displayLinkContext);
-        // Do render.
+        auto view = (__bridge View *)displayLinkContext;
+        auto example = view->example;
+        if (example) {
+            example->Update();
+            example->Render();
+        }
     }
-
     return kCVReturnSuccess;
 }
 
@@ -57,25 +60,27 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
     return [CAMetalLayer layer];
 }
 
-- (void)windowWillClose:(NSNotification *)notification {
-    if (_display_link) {
-        CVDisplayLinkStop(_display_link);
-        CVDisplayLinkRelease(_display_link);
-    }
-}
+- (void)viewDidMoveToWindow {
+    [super viewDidMoveToWindow];
 
-- (void)MainLoop:(Example*) example {
     CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
-    CVDisplayLinkSetOutputCallback(_display_link, &DisplayLinkOutputCallback, example);
+    CVDisplayLinkSetOutputCallback(_display_link, &DisplayLinkOutputCallback, (__bridge void *)self);
     CVDisplayLinkSetCurrentCGDisplay(_display_link, [self GetDirectDisplayID]);
     CVDisplayLinkStart(_display_link);
-    [NSApp run];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    CVDisplayLinkStop(_display_link);
+    CVDisplayLinkRelease(_display_link);
+
+    if (example) {
+        example->Term();
+    }
 }
 
 - (CGDirectDisplayID)GetDirectDisplayID {
     return (CGDirectDisplayID)[self.window.screen.deviceDescription[@"NSScreenNumber"] unsignedIntegerValue];
 }
-
 @end
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -93,7 +98,12 @@ Window::~Window() {
 //----------------------------------------------------------------------------------------------------------------------
 
 void Window::MainLoop(Example *example) {
-    [_view MainLoop:example];
+    example->BindToWindow(this);
+    example->Init();
+    example->Resize(GetResolution());
+
+    _view->example = example;
+    [NSApp run];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
