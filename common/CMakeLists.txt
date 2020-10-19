@@ -23,6 +23,7 @@ target_compile_options(common
         -xobjective-c++)
 
 target_link_libraries(common
-    PUBLIC "-framework AppKit"
+    PUBLIC external
+           "-framework AppKit"
            "-framework QuartzCore"
            "-framework Metal")
