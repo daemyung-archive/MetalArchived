@@ -6,10 +6,12 @@
 #ifndef EXAMPLE_H_
 #define EXAMPLE_H_
 
-#include <string>
+#include <imgui.h>
 #include <QuartzCore/CAMetalLayer.h>
 #include <Metal/Metal.h>
+#include <string>
 
+#include "window.h"
 #include "utility.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -53,6 +55,11 @@ public:
     void Render();
     
 protected:
+    //! Record draw commands for ImGui.
+    //! \param descriptor A render pass descriptor.
+    //! \param encoder A render command encoder.
+    void RecordDrawImGuiCommands(MTLRenderPassDescriptor *descriptor, id<MTLRenderCommandEncoder> encoder);
+
     //! Handle initialize event.
     virtual void OnInit() = 0;
 
@@ -81,6 +88,18 @@ protected:
     //! Initialize a semaphore.
     void InitSemaphore();
     
+    //! Initialize ImGui.
+    void InitImGui();
+
+    //! Terminate ImGui.
+    void TermImGui();
+
+    //! Begin ImGui pass.
+    void BeginImGuiPass();
+
+    //! End ImGui pass.
+    void EndImGuiPass();
+
 protected:
     std::string _title;
     uint32_t _frame_index = 0;

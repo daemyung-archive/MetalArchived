@@ -5,6 +5,8 @@
 
 #include "window.h"
 
+#include <imgui_impl_osx.h>
+
 #include "example.h"
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -60,13 +62,15 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
     return [CAMetalLayer layer];
 }
 
-- (void)viewDidMoveToWindow {
-    [super viewDidMoveToWindow];
+- (BOOL)acceptsFirstResponder {
+    return YES;
+}
 
-    CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
-    CVDisplayLinkSetOutputCallback(_display_link, &DisplayLinkOutputCallback, (__bridge void *)self);
-    CVDisplayLinkSetCurrentCGDisplay(_display_link, [self GetDirectDisplayID]);
-    CVDisplayLinkStart(_display_link);
+- (void)setFrameSize:(NSSize)size {
+    [super setFrameSize:size];
+    if (example) {
+        example->Resize({size.width, size.height});
+    }
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -76,6 +80,67 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
     if (example) {
         example->Term();
     }
+}
+
+- (void)viewDidMoveToWindow {
+    [super viewDidMoveToWindow];
+
+    CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
+    CVDisplayLinkSetOutputCallback(_display_link, &DisplayLinkOutputCallback, (__bridge void *)self);
+    CVDisplayLinkSetCurrentCGDisplay(_display_link, [self GetDirectDisplayID]);
+    CVDisplayLinkStart(_display_link);
+}
+
+- (void)mouseMoved:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)mouseDown:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)rightMouseDown:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)otherMouseDown:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)mouseUp:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)rightMouseUp:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)mouseDragged:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)rightMouseDragged:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)otherMouseDragged:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)scrollWheel:(NSEvent *)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)keyDown:(NSEvent*)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
+}
+
+- (void)keyUp:(NSEvent*)event {
+    ImGui_ImplOSX_HandleEvent(event, self);
 }
 
 - (CGDirectDisplayID)GetDirectDisplayID {

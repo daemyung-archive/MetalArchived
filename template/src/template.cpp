@@ -7,6 +7,8 @@
 #include <common/example.h>
 #include <iostream>
 
+#include <imgui_impl_metal.h>
+
 //----------------------------------------------------------------------------------------------------------------------
 
 const auto kLightSteelBlue = MTLClearColorMake(0.69, 0.77, 0.87, 1.0);
@@ -49,6 +51,9 @@ protected:
         auto encoder = [_command_buffer renderCommandEncoderWithDescriptor:desc];
         [encoder setViewport:_viewport];
         [encoder setScissorRect:_scissor_rect];
+
+        RecordDrawImGuiCommands(desc, encoder);
+
         [encoder endEncoding];
     }
 
