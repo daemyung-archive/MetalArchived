@@ -10,6 +10,8 @@
 
 #include "window.h"
 
+using namespace std::chrono_literals;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 Example::Example(const std::string &title) :
@@ -40,6 +42,7 @@ void Example::BindToWindow(Window *window) {
 //----------------------------------------------------------------------------------------------------------------------
 
 void Example::Init() {
+    _timer.Start();
     OnInit();
 }
 
@@ -47,6 +50,7 @@ void Example::Init() {
 
 void Example::Term() {
     OnTerm();
+    _timer.Stop();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -67,6 +71,18 @@ void Example::Resize(const Resolution &resolution) {
 //----------------------------------------------------------------------------------------------------------------------
 
 void Example::Update() {
+    _timer.Tick();
+
+    // Calculate FPS.
+    auto elapsed_time = _timer.GetElapsedTime();
+    if (elapsed_time - _fps_time > 1s) {
+        _fps = _cps;
+        _fps_time = elapsed_time;
+        _cps = 0;
+    } else {
+        ++_cps;
+    }
+
     // Wait until the command buffer has completed its work.
     dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
     
@@ -171,6 +187,7 @@ void Example::BeginImGuiPass() {
                  ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     ImGui::TextUnformatted(_title.c_str());
     ImGui::TextUnformatted(_device.name.UTF8String);
+    ImGui::Text("%.2f ms/frame(%u FPS)", _timer.GetDeltaTime().count(), _fps);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

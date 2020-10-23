@@ -13,6 +13,7 @@
 
 #include "window.h"
 #include "utility.h"
+#include "timer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -102,6 +103,10 @@ protected:
 
 protected:
     std::string _title;
+    Timer _timer;
+    uint32_t _cps = 0;
+    uint32_t _fps = 0;
+    Timer::Duration _fps_time = Timer::Duration::zero();
     uint32_t _frame_index = 0;
     id<MTLDevice> _device;
     id<MTLCommandQueue> _command_queue;
@@ -109,7 +114,6 @@ protected:
     id<MTLCommandBuffer> _command_buffer;
     CAMetalLayer *_layer = nil;
     id<CAMetalDrawable> _drawable;
-    
 };
 
 //----------------------------------------------------------------------------------------------------------------------

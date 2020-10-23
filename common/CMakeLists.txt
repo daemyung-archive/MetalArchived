@@ -7,8 +7,10 @@ add_library(common
     STATIC include/common/utility.h
            include/common/window.h
            include/common/example.h
+           include/common/timer.h
                src/window.cpp
-               src/example.cpp)
+               src/example.cpp
+               src/timer.cpp)
 
 target_include_directories(common
     PUBLIC  include
