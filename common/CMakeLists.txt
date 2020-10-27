@@ -8,6 +8,7 @@ add_library(common
            include/common/window.h
            include/common/example.h
            include/common/timer.h
+               src/utility.cpp
                src/window.cpp
                src/example.cpp
                src/timer.cpp)

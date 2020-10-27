@@ -7,6 +7,7 @@ A comprehensive collection of open source C++ examples for Metal, the new genera
 + [Clone](#clone)
 + [Generate the project](#generate-the-project)
 + [Examples](#examples)
+    + [Triangle](https://github.com/daemyung/Metal/tree/master/triangle)
 + [Open sources](#open-sources)
 
 ## Status
@@ -27,6 +28,7 @@ cmake ..
 ```
 
 ## Examples
++ [Triangle](https://github.com/daemyung/Metal/tree/master/triangle)
 
 ## Open sources
 + [fmt](https://github.com/fmtlib/fmt)

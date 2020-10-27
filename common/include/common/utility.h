@@ -6,6 +6,7 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
+#include <Metal/Metal.h>
 #include <cstdint>
 #include <stdexcept>
 #include <tuple>
@@ -32,6 +33,23 @@ inline auto GetWidth(const Resolution &resolution) {
 inline auto GetHeight(const Resolution &resolution) {
     return std::get<1>(resolution);
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//! Read a file.
+//! \param path A file path.
+//! \return The content of a file.
+extern std::string ReadFile(const std::filesystem::path &path);
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//! Compile a shader.
+//! \param A Metal device.
+//! \param file_path The file path that contains the shader code.
+//! \param entrypoint The name of shader entrypoint function where shader execution begin.
+//! \return A handle to MTLFunction.
+extern id<MTLFunction> CompileShader(id<MTLDevice> device, const std::filesystem::path &file_path,
+                                     const std::string &entrypoint);
 
 //----------------------------------------------------------------------------------------------------------------------
 

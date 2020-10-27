@@ -7,8 +7,6 @@
 #include <common/example.h>
 #include <iostream>
 
-#include <imgui_impl_metal.h>
-
 //----------------------------------------------------------------------------------------------------------------------
 
 const auto kLightSteelBlue = MTLClearColorMake(0.69, 0.77, 0.87, 1.0);
