@@ -76,7 +76,6 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 - (void)windowWillClose:(NSNotification *)notification {
     CVDisplayLinkStop(_display_link);
     CVDisplayLinkRelease(_display_link);
-
     if (example) {
         example->Term();
     }
@@ -93,10 +92,16 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
 - (void)mouseMoved:(NSEvent *)event {
     ImGui_ImplOSX_HandleEvent(event, self);
+    if (example) {
+        example->OnMouseMove(event, [self GetMousePoint:event]);
+    }
 }
 
 - (void)mouseDown:(NSEvent *)event {
     ImGui_ImplOSX_HandleEvent(event, self);
+    if (example) {
+        example->OnMouseButtonDown(event, [self GetMousePoint:event]);
+    }
 }
 
 - (void)rightMouseDown:(NSEvent *)event {
@@ -109,6 +114,9 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
 - (void)mouseUp:(NSEvent *)event {
     ImGui_ImplOSX_HandleEvent(event, self);
+    if (example) {
+        example->OnMouseButtonDown(event, [self GetMousePoint:event]);
+    }
 }
 
 - (void)rightMouseUp:(NSEvent *)event {
@@ -121,6 +129,9 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
 - (void)mouseDragged:(NSEvent *)event {
     ImGui_ImplOSX_HandleEvent(event, self);
+    if (example) {
+        example->OnMouseMove(event, [self GetMousePoint:event]);
+    }
 }
 
 - (void)rightMouseDragged:(NSEvent *)event {
@@ -133,6 +144,9 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
 - (void)scrollWheel:(NSEvent *)event {
     ImGui_ImplOSX_HandleEvent(event, self);
+    if (example) {
+        example->OnMouseWheel(-[event deltaY]);
+    }
 }
 
 - (void)keyDown:(NSEvent*)event {
@@ -145,6 +159,12 @@ static CVReturn DisplayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
 - (CGDirectDisplayID)GetDirectDisplayID {
     return (CGDirectDisplayID)[self.window.screen.deviceDescription[@"NSScreenNumber"] unsignedIntegerValue];
+}
+
+- (NSPoint)GetMousePoint:(NSEvent *)event {
+    auto point = [self convertPoint:event.locationInWindow fromView:nil];
+    point.y = self.bounds.size.height - point.y;
+    return point;
 }
 @end
 

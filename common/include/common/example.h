@@ -14,6 +14,7 @@
 #include "window.h"
 #include "utility.h"
 #include "timer.h"
+#include "camera.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -54,6 +55,25 @@ public:
 
     //! Render.
     void Render();
+
+    //! Handle mouse button down event.
+    //! \param button The button that is pressing.
+    //! \param point A point of the mouse cursor.
+    void OnMouseButtonDown(NSEvent* event, const NSPoint &point);
+
+    //! Handle mouse button up event.
+    //! \param button The button that is releasing.
+    //! \param point A point of the mouse cursor.
+    void OnMouseButtonUp(NSEvent* event, const NSPoint &point);
+
+    //! Handle mouse move event.
+    //! \param button The button that is pressing.
+    //! \param point A position of the mouse cursor.
+    void OnMouseMove(NSEvent* event, const NSPoint &point);
+
+    //! Handle mouse wheel event.
+    //! \param delta The rotated distance by wheel.
+    void OnMouseWheel(float delta);
     
 protected:
     //! Record draw commands for ImGui.
@@ -107,6 +127,8 @@ protected:
     uint32_t _cps = 0;
     uint32_t _fps = 0;
     Timer::Duration _fps_time = Timer::Duration::zero();
+    Camera _camera;
+    NSPoint _mouse_point = {0, 0};
     uint32_t _frame_index = 0;
     id<MTLDevice> _device;
     id<MTLCommandQueue> _command_queue;

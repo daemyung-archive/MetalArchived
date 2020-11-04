@@ -57,6 +57,8 @@ void Example::Term() {
 
 void Example::Resize(const Resolution &resolution) {
     @synchronized(_layer) {
+        _camera.SetAspectRatio(GetAspectRatio(resolution));
+
         // Resize a layer drawable size.
         _layer.drawableSize = CGSizeMake(GetWidth(resolution), GetHeight(resolution));
 
@@ -119,6 +121,34 @@ void Example::Render() {
         // Commit a command buffer.
         [_command_buffer commit];
     }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Example::OnMouseButtonDown(NSEvent* event, const NSPoint &point) {
+    _mouse_point = point;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Example::OnMouseButtonUp(NSEvent* event, const NSPoint &point) {
+    _mouse_point = point;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Example::OnMouseMove(NSEvent* event, const NSPoint &point) {
+    if (event.type == NSEventTypeLeftMouseDragged) {
+        _camera.RotateBy({static_cast<float>(point.x - _mouse_point.x),
+                          static_cast<float>(point.y - _mouse_point.y)});
+    }
+    _mouse_point = point;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Example::OnMouseWheel(float delta) {
+    _camera.ZoomBy(delta);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

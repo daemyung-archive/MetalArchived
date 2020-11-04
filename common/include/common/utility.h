@@ -7,7 +7,9 @@
 #define UTILITY_H_
 
 #include <Metal/Metal.h>
+#include <simd/simd.h>
 #include <cstdint>
+#include <cmath>
 #include <stdexcept>
 #include <tuple>
 #include <filesystem>
@@ -36,6 +38,15 @@ inline auto GetHeight(const Resolution &resolution) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+//! Retrieve an aspect ratio of a resolution.
+//! \param resolution A resolution.
+//! \return An aspect ratio.
+inline auto GetAspectRatio(const Resolution &resolution) {
+    return GetWidth(resolution) / static_cast<float>(GetHeight(resolution));
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 //! Read a file.
 //! \param path A file path.
 //! \return The content of a file.
@@ -50,6 +61,20 @@ extern std::string ReadFile(const std::filesystem::path &path);
 //! \return A handle to MTLFunction.
 extern id<MTLFunction> CompileShader(id<MTLDevice> device, const std::filesystem::path &file_path,
                                      const std::string &entrypoint);
+
+//----------------------------------------------------------------------------------------------------------------------
+
+template<typename T>
+constexpr auto ConvertToRadians(T degree) {
+    return (degree / 180.0) * M_PI;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+template<typename T>
+constexpr bool NearEqual(T lhs, T rhs, T epsilon) {
+    return abs(lhs - rhs) < epsilon;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

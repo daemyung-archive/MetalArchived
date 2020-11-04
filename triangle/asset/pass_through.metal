@@ -14,9 +14,20 @@ struct Output
     float3 color;
 };
 
-vertex Output VSMain(Input input [[stage_in]]) {
+struct Transforms {
+    float4x4 projection;
+    float4x4 view;
+    float4x4 model;
+};
+
+vertex Output VSMain(Input input [[stage_in]],
+                     constant Transforms &transforms [[buffer(1)]]) {
+    float4x4 PVM = transforms.projection *
+                   transforms.view *
+                   transforms.model;
+
     Output output;
-    output.clipSpacePosition = float4(input.position, 1.0);
+    output.clipSpacePosition = PVM * float4(input.position, 1.0);
     output.color = input.color;
     return output;
 }

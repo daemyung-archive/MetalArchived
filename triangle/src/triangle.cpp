@@ -18,6 +18,14 @@ struct Vertex {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+struct Transforms {
+    simd::float4x4 projection;
+    simd::float4x4 view;
+    simd::float4x4 model;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
 struct Options {
     bool use_staging_buffer = true;
 };
@@ -68,6 +76,11 @@ protected:
                 InitResources();
             }
         }
+
+        // Transformations transforms;
+        _transforms.projection = _camera.GetProjection();
+        _transforms.view = _camera.GetView();
+        _transforms.model = matrix_identity_float4x4;
     }
 
     void OnRender(uint32_t index) override {
@@ -81,6 +94,7 @@ protected:
         [encoder setViewport:_viewport];
         [encoder setScissorRect:_scissor_rect];
         [encoder setVertexBuffer:_vertex_buffer offset:0 atIndex:0];
+        [encoder setVertexBytes:&_transforms length:sizeof(Transforms) atIndex:1];
         [encoder setRenderPipelineState:_pipeline_state];
         [encoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle indexCount:3
                              indexType:MTLIndexTypeUInt16 indexBuffer:_index_buffer
@@ -163,6 +177,7 @@ private:
     id<MTLRenderPipelineState> _pipeline_state;
     MTLViewport _viewport = {0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
     MTLScissorRect _scissor_rect = {0, 0, 0, 0};
+    Transforms _transforms = {};
 };
 
 //----------------------------------------------------------------------------------------------------------------------
